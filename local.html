@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kornnex | Perfil del Comercio</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body class="bg-slate-950 text-white font-sans min-h-screen">
+
+  <header class="border-b border-slate-800 bg-slate-900/90 backdrop-blur sticky top-0 z-50">
+    <div class="max-w-4xl mx-auto px-4 py-3 flex justify-between items-center">
+      <a href="/" class="text-xs text-slate-400 hover:text-cyan-400 transition flex items-center gap-2">
+        <i class="fas fa-arrow-left"></i> Volver al directorio
+      </a>
+      <span class="text-sm font-black tracking-wider text-cyan-400">KORNNEX</span>
+    </div>
+  </header>
+
+  <div class="relative">
+    <div class="h-48 md:h-64 w-full overflow-hidden relative">
+      <img id="localBanner" src="" alt="Portada" class="w-full h-full object-cover">
+      <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/40 to-transparent"></div>
+    </div>
+
+    <div class="max-w-4xl mx-auto px-4 relative -mt-16">
+      <div class="flex flex-col sm:flex-row items-start sm:items-end gap-4 mb-6">
+        <img id="localAvatar" src="" alt="Logo" class="w-24 h-24 sm:w-32 sm:h-32 rounded-2xl border-4 border-slate-950 object-cover shadow-2xl bg-slate-800">
+        
+        <div class="flex-1">
+          <div class="flex items-center gap-2 flex-wrap">
+            <h1 id="localNombre" class="text-2xl sm:text-3xl font-black text-white">...</h1>
+            <span id="badgeVerificado" class="hidden text-cyan-400 text-lg" title="Perfil Verificado">
+              <i class="fas fa-check-circle"></i>
+            </span>
+            <span id="localRubro" class="text-xs font-bold px-2.5 py-0.5 rounded-full bg-cyan-950 text-cyan-400 border border-cyan-800">
+              Rubro
+            </span>
+          </div>
+          <p id="localDesc" class="text-slate-400 text-sm mt-1 max-w-2xl">...</p>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-8">
+        <a id="btnWhatsapp" href="#" target="_blank" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 px-4 rounded-xl transition flex items-center justify-center gap-2 text-sm shadow-lg shadow-emerald-950/40">
+          <i class="fab fa-whatsapp text-lg"></i> WhatsApp
+        </a>
+        <a id="btnInstagram" href="#" target="_blank" class="bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 font-bold py-3 px-4 rounded-xl transition flex items-center justify-center gap-2 text-sm">
+          <i class="fab fa-instagram text-pink-500 text-lg"></i> Instagram
+        </a>
+        <button onclick="compartirLocal()" class="col-span-2 sm:col-span-1 bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 font-bold py-3 px-4 rounded-xl transition flex items-center justify-center gap-2 text-sm">
+          <i class="fas fa-share-alt text-cyan-400"></i> Compartir
+        </button>
+      </div>
+
+      <!-- CATÁLOGO / PRODUCTOS -->
+      <section class="border-t border-slate-800 pt-8 pb-16">
+        <h2 class="text-xl font-bold mb-6 text-white flex items-center gap-2">
+          <i class="fas fa-shopping-bag text-cyan-400"></i> Catálogo / Menú Interactivo
+        </h2>
+
+        <div id="gridProductos" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <!-- Productos dinámicos -->
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const localId = urlParams.get('id');
+    let localActual = null;
+
+    async function cargarPerfil() {
+      if (!localId) {
+        window.location.href = '/';
+        return;
+      }
+
+      try {
+        const res = await fetch(`/api/local/${localId}`);
+        localActual = await res.json();
+
+        if (!localActual || localActual.error) {
+          window.location.href = '/';
+          return;
+        }
+
+        document.title = `${localActual.nombre} | Kornnex`;
+        document.getElementById("localNombre").innerText = localActual.nombre;
+        document.getElementById("localRubro").innerText = localActual.rubro;
+        document.getElementById("localDesc").innerText = localActual.descripcion;
+        document.getElementById("localBanner").src = localActual.imagen;
+        document.getElementById("localAvatar").src = localActual.imagen;
+
+        if (localActual.verificado) {
+          document.getElementById("badgeVerificado").classList.remove("hidden");
+        }
+
+        const cleanIg = localActual.instagram.replace('@', '');
+        document.getElementById("btnInstagram").href = `https://instagram.com/${cleanIg}`;
+        
+        if (localActual.whatsapp) {
+          const mensajeWa = encodeURIComponent(`Hola ${localActual.nombre}, vi tu local en Kornnex y quiero hacer una consulta!`);
+          document.getElementById("btnWhatsapp").href = `https://wa.me/${localActual.whatsapp}?text=${mensajeWa}`;
+        } else {
+          document.getElementById("btnWhatsapp").classList.add("opacity-50", "pointer-events-none");
+        }
+
+        cargarProductosPublicos();
+
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
+    async function cargarProductosPublicos() {
+      try {
+        const res = await fetch(`/api/productos/${localId}`);
+        const productos = await res.json();
+        const grid = document.getElementById("gridProductos");
+        grid.innerHTML = "";
+
+        if (productos.length === 0) {
+          grid.innerHTML = `<p class="text-xs text-slate-500 col-span-2">Este comercio aún no cargó productos a su catálogo.</p>`;
+          return;
+        }
+
+        productos.forEach(p => {
+          const mensajeProducto = encodeURIComponent(`Hola ${localActual.nombre}, me interesa comprar el producto "${p.nombre}" ($${p.precio}) que vi en Kornnex!`);
+          const linkWa = localActual.whatsapp ? `https://wa.me/${localActual.whatsapp}?text=${mensajeProducto}` : '#';
+
+          grid.innerHTML += `
+            <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 flex gap-4 items-center justify-between">
+              <div class="flex gap-3 items-center">
+                ${p.imagen ? `<img src="${p.imagen}" class="w-16 h-16 rounded-xl object-cover bg-slate-800">` : ''}
+                <div>
+                  <h3 class="font-bold text-white text-sm">${p.nombre}</h3>
+                  ${p.descripcion ? `<p class="text-xs text-slate-400 mt-0.5">${p.descripcion}</p>` : ''}
+                  <span class="text-cyan-400 font-bold text-sm mt-1 block">$${p.precio}</span>
+                </div>
+              </div>
+              <a href="${linkWa}" target="_blank" class="bg-emerald-600/90 hover:bg-emerald-500 text-white font-bold px-3 py-2 rounded-xl text-xs flex items-center gap-1 transition shadow">
+                <i class="fab fa-whatsapp"></i> Pedir
+              </a>
+            </div>
+          `;
+        });
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
+    function compartirLocal() {
+      if (navigator.share) {
+        navigator.share({ title: document.title, url: window.location.href });
+      } else {
+        navigator.clipboard.writeText(window.location.href);
+        alert("¡Enlace copiado al portapapeles!");
+      }
+    }
+
+    cargarPerfil();
+  </script>
+</body>
+</html>

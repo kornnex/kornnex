@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kornnex | Iniciar Sesión</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body class="bg-slate-900 text-white font-sans min-h-screen flex items-center justify-center p-4">
+
+  <div class="bg-slate-800 border border-slate-700 rounded-2xl max-w-md w-full p-8 shadow-2xl">
+    <div class="text-center mb-6">
+      <span class="text-2xl font-black tracking-wider bg-gradient-to-r from-cyan-400 to-blue-600 bg-clip-text text-transparent">KORNNEX</span>
+      <h2 class="text-xl font-bold text-white mt-2">Panel del Emprendedor</h2>
+      <p class="text-slate-400 text-xs mt-1">Inicia sesión para gestionar tu comercio</p>
+    </div>
+
+    <form id="formLogin" onsubmit="iniciarSesion(event)" class="space-y-4">
+      <div>
+        <label class="block text-xs font-semibold text-slate-400 mb-1">Instagram o Nombre del Local</label>
+        <input type="text" id="loginIg" placeholder="@tu_local" required class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-cyan-500">
+      </div>
+
+      <div>
+        <label class="block text-xs font-semibold text-slate-400 mb-1">Contraseña</label>
+        <input type="password" id="loginPassword" placeholder="••••••••" required class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-cyan-500">
+      </div>
+
+      <button type="submit" class="w-full bg-cyan-600 hover:bg-cyan-500 text-white font-bold py-3 rounded-xl transition shadow-lg">
+        Ingresar al Panel
+      </button>
+    </form>
+
+    <div class="mt-6 text-center border-t border-slate-700/60 pt-4">
+      <a href="http://localhost:3000" class="text-xs text-slate-400 hover:text-cyan-400 transition flex items-center justify-center gap-1">
+        <i class="fas fa-arrow-left"></i> Volver a Kornnex
+      </a>
+    </div>
+  </div>
+
+  <script>
+    async function iniciarSesion(e) {
+      e.preventDefault();
+      const ig = document.getElementById("loginIg").value;
+      const password = document.getElementById("loginPassword").value;
+
+      try {
+        const res = await fetch('/api/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ instagram: ig, password: password })
+        });
+
+        const data = await res.json();
+        if (data.exito) {
+          // Guardar sesión en localStorage
+          localStorage.setItem('kornnex_local_id', data.local.id);
+          window.location.href = '/dashboard.html';
+        } else {
+          alert(data.error || "Datos incorrectos.");
+        }
+      } catch (err) {
+        console.error(err);
+      }
+    }
+  </script>
+</body>
+</html>

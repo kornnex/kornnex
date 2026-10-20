@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kornnex | Panel SuperAdmin</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body class="bg-slate-950 text-white font-sans min-h-screen">
+
+  <!-- HEADER -->
+  <header class="border-b border-slate-800 bg-slate-900/90 backdrop-blur sticky top-0 z-50">
+    <div class="max-w-6xl mx-auto px-4 py-4 flex justify-between items-center">
+      <div class="flex items-center gap-3">
+        <span class="text-xl font-black tracking-wider bg-gradient-to-r from-cyan-400 to-blue-600 bg-clip-text text-transparent">KORNNEX SUPERADMIN</span>
+        <span class="bg-cyan-500/10 text-cyan-400 border border-cyan-500/30 text-xs font-bold px-2.5 py-0.5 rounded-full">Control Total</span>
+      </div>
+      <a href="/index.html" class="text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 px-3 py-1.5 rounded-lg border border-slate-700 transition">
+        Ver Web Principal
+      </a>
+    </div>
+  </header>
+
+  <main class="max-w-6xl mx-auto px-4 py-8 space-y-8">
+    
+    <!-- ACCIONES Y CREACIÓN RÁPIDA -->
+    <div class="flex flex-wrap justify-between items-center gap-4">
+      <div>
+        <h1 class="text-2xl font-black text-white">Gestión de Comercios</h1>
+        <p class="text-xs text-slate-400">Creá, edita, destaca o borrá cualquier perfil de Alejandro Korn.</p>
+      </div>
+      <button onclick="abrirModalCrear()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-4 py-2.5 rounded-xl text-xs transition shadow-lg flex items-center gap-2">
+        <i class="fas fa-plus-circle"></i> Agregar Nuevo Local
+      </button>
+    </div>
+
+    <!-- TABLA DE COMERCIOS -->
+    <div class="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden shadow-2xl">
+      <div class="overflow-x-auto">
+        <table class="w-full text-left border-collapse">
+          <thead>
+            <tr class="border-b border-slate-800 bg-slate-900/50 text-xs uppercase text-slate-400 tracking-wider">
+              <th class="p-4">Comercio</th>
+              <th class="p-4">Rubro</th>
+              <th class="p-4">Contacto</th>
+              <th class="p-4">Estado</th>
+              <th class="p-4">Plan</th>
+              <th class="p-4 text-right">Acciones</th>
+            </tr>
+          </thead>
+          <tbody id="tablaAdmin" class="divide-y divide-slate-800/60 text-xs">
+            <!-- Filas cargadas dinámicamente -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+
+  <!-- MODAL CREAR / EDITAR LOCAL -->
+  <div id="modalForm" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm hidden flex items-center justify-center p-4 z-50">
+    <div class="bg-slate-900 border border-slate-700 rounded-2xl w-full max-w-lg p-6 space-y-4 max-h-[90vh] overflow-y-auto shadow-2xl">
+      <div class="flex justify-between items-center border-b border-slate-800 pb-3">
+        <h3 id="modalTitulo" class="text-lg font-bold text-white">Agregar Comercio</h3>
+        <button onclick="cerrarModal()" class="text-slate-400 hover:text-white"><i class="fas fa-times"></i></button>
+      </div>
+
+      <form id="formLocalAdmin" onsubmit="guardarLocalAdmin(event)" class="space-y-3">
+        <input type="hidden" id="editId">
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-slate-400 text-[11px] mb-1 font-semibold">Nombre del Local *</label>
+            <input type="text" id="adminNombre" required class="w-full bg-slate-800 border border-slate-700 rounded-xl p-2.5 text-xs text-white focus:outline-none focus:border-cyan-500">
+          </div>
+          <div>
+            <label class="block text-slate-400 text-[11px] mb-1 font-semibold">Rubro *</label>
+            <input type="text" id="adminRubro" placeholder="Gastronomía, Indumentaria..." required class="w-full bg-slate-800 border border-slate-700 rounded-xl p-2.5 text-xs text-white focus:outline-none focus:border-cyan-500">
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-slate-400 text-[11px] mb-1 font-semibold">Instagram</label>
+            <input type="text" id="adminIg" placeholder="@ejemplo" class="w-full bg-slate-800 border border-slate-700 rounded-xl p-2.5 text-xs text-white focus:outline-none focus:border-cyan-500">
+          </div>
+          <div>
+            <label class="block text-slate-400 text-[11px] mb-1 font-semibold">WhatsApp</label>
+            <input type="text" id="adminWsp" placeholder="54911..." class="w-full bg-slate-800 border border-slate-700 rounded-xl p-2.5 text-xs text-white focus:outline-none focus:border-cyan-500">
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-slate-400 text-[11px] mb-1 font-semibold">URL Imagen Portada</label>
+          <input type="url" id="adminImg" placeholder="https://..." class="w-full bg-slate-800 border border-slate-700 rounded-xl p-2.5 text-xs text-white focus:outline-none focus:border-cyan-500">
+        </div>
+
+        <div>
+          <label class="block text-slate-400 text-[11px] mb-1 font-semibold">Descripción</label>
+          <textarea id="adminDesc" rows="2" class="w-full bg-slate-800 border border-slate-700 rounded-xl p-2.5 text-xs text-white focus:outline-none focus:border-cyan-500"></textarea>
+        </div>
+
+        <!-- CONFIGURACIONES DE PLAN Y ESTADO -->
+        <div class="grid grid-cols-3 gap-3 pt-2 border-t border-slate-800">
+          <div>
+            <label class="block text-slate-400 text-[11px] mb-1 font-semibold">Verificado</label>
+            <select id="adminVerificado" class="w-full bg-slate-800 border border-slate-700 rounded-xl p-2 text-xs text-white">
+              <option value="0">No (Sin tilde)</option>
+              <option value="1">Sí (Verificado Azul)</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-slate-400 text-[11px] mb-1 font-semibold">Destacado</label>
+            <select id="adminDestacado" class="w-full bg-slate-800 border border-slate-700 rounded-xl p-2 text-xs text-white">
+              <option value="0">Normal</option>
+              <option value="1">Destacado ★</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-slate-400 text-[11px] mb-1 font-semibold">Plan</label>
+            <select id="adminPlan" class="w-full bg-slate-800 border border-slate-700 rounded-xl p-2 text-xs text-white">
+              <option value="gratis">Gratis</option>
+              <option value="premium">Plan Pro 👑</option>
+            </select>
+          </div>
+        </div>
+
+        <button type="submit" class="w-full bg-cyan-600 hover:bg-cyan-500 text-white font-bold py-3 rounded-xl transition shadow-lg text-xs mt-2">
+          Guardar Cambios
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    let todosLosLocales = [];
+
+    async function cargarTablaAdmin() {
+      try {
+        const res = await fetch('/api/admin/emprendimientos');
+        todosLosLocales = await res.json();
+        
+        const tbody = document.getElementById("tablaAdmin");
+        tbody.innerHTML = "";
+
+        todosLosLocales.forEach(loc => {
+          tbody.innerHTML += `
+            <tr class="hover:bg-slate-800/40 transition">
+              <td class="p-4 flex items-center gap-3">
+                <img src="${loc.imagen || 'https://via.placeholder.com/100'}" class="w-10 h-10 rounded-xl object-cover border border-slate-700">
+                <div>
+                  <div class="font-bold text-white text-xs flex items-center gap-1.5">
+                    ${loc.nombre}
+                    ${loc.verificado ? '<i class="fas fa-check-circle text-cyan-400"></i>' : ''}
+                    ${loc.destacado ? '<i class="fas fa-star text-amber-400"></i>' : ''}
+                  </div>
+                  <div class="text-[10px] text-slate-500 font-mono">${loc.slug}</div>
+                </div>
+              </td>
+              <td class="p-4 text-slate-300 font-medium">${loc.rubro}</td>
+              <td class="p-4 text-slate-400">
+                <div>${loc.instagram || '-'}</div>
+                <div class="text-[10px] text-slate-500">${loc.whatsapp || '-'}</div>
+              </td>
+              <td class="p-4">
+                <button onclick="toggleDestacado(${loc.id}, ${loc.destacado ? 0 : 1})" class="px-2.5 py-1 rounded-lg text-[10px] font-bold border ${loc.destacado ? 'bg-amber-500/10 text-amber-400 border-amber-500/30' : 'bg-slate-800 text-slate-400 border-slate-700'}">
+                  ${loc.destacado ? '★ Destacado' : 'Normal'}
+                </button>
+              </td>
+              <td class="p-4">
+                <span class="px-2 py-0.5 rounded-full text-[10px] font-bold ${loc.plan === 'premium' ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-500/40' : 'bg-slate-800 text-slate-400'}">
+                  ${loc.plan === 'premium' ? 'PRO 👑' : 'Gratis'}
+                </span>
+              </td>
+              <td class="p-4 text-right space-x-1">
+                <button onclick="abrirModalEditar(${loc.id})" class="bg-cyan-600/20 hover:bg-cyan-600/40 text-cyan-300 px-2.5 py-1.5 rounded-lg text-xs transition">
+                  <i class="fas fa-edit"></i>
+                </button>
+                <button onclick="eliminarLocal(${loc.id})" class="bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 px-2.5 py-1.5 rounded-lg text-xs transition">
+                  <i class="fas fa-trash"></i>
+                </button>
+              </td>
+            </tr>
+          `;
+        });
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
+    function abrirModalCrear() {
+      document.getElementById("modalTitulo").innerText = "Agregar Nuevo Local";
+      document.getElementById("formLocalAdmin").reset();
+      document.getElementById("editId").value = "";
+      document.getElementById("modalForm").classList.remove("hidden");
+    }
+
+    function abrirModalEditar(id) {
+      const loc = todosLosLocales.find(l => l.id === id);
+      if (!loc) return;
+
+      document.getElementById("modalTitulo").innerText = `Editar "${loc.nombre}"`;
+      document.getElementById("editId").value = loc.id;
+      document.getElementById("adminNombre").value = loc.nombre;
+      document.getElementById("adminRubro").value = loc.rubro;
+      document.getElementById("adminIg").value = loc.instagram || "";
+      document.getElementById("adminWsp").value = loc.whatsapp || "";
+      document.getElementById("adminImg").value = loc.imagen || "";
+      document.getElementById("adminDesc").value = loc.descripcion || "";
+      document.getElementById("adminVerificado").value = loc.verificado ? "1" : "0";
+      document.getElementById("adminDestacado").value = loc.destacado ? "1" : "0";
+      document.getElementById("adminPlan").value = loc.plan || "gratis";
+
+      document.getElementById("modalForm").classList.remove("hidden");
+    }
+
+    function cerrarModal() {
+      document.getElementById("modalForm").classList.add("hidden");
+    }
+
+    async function guardarLocalAdmin(e) {
+      e.preventDefault();
+      const id = document.getElementById("editId").value;
+
+      const payload = {
+        nombre: document.getElementById("adminNombre").value,
+        rubro: document.getElementById("adminRubro").value,
+        instagram: document.getElementById("adminIg").value,
+        whatsapp: document.getElementById("adminWsp").value,
+        imagen: document.getElementById("adminImg").value,
+        descripcion: document.getElementById("adminDesc").value,
+        verificado: parseInt(document.getElementById("adminVerificado").value),
+        destacado: parseInt(document.getElementById("adminDestacado").value),
+        plan: document.getElementById("adminPlan").value
+      };
+
+      const url = id ? `/api/admin/editar/${id}` : '/api/admin/crear';
+      const method = id ? 'PUT' : 'POST';
+
+      try {
+        const res = await fetch(url, {
+          method: method,
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+
+        if (res.ok) {
+          cerrarModal();
+          cargarTablaAdmin();
+        }
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
+    async function toggleDestacado(id, nuevoEstado) {
+      await fetch(`/api/admin/destacar/${id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ destacado: nuevoEstado })
+      });
+      cargarTablaAdmin();
+    }
+
+    async function eliminarLocal(id) {
+      if (confirm("¿Seguro que querés eliminar este local por completo de la base de datos?")) {
+        await fetch(`/api/admin/eliminar/${id}`, { method: 'DELETE' });
+        cargarTablaAdmin();
+      }
+    }
+
+    cargarTablaAdmin();
+  </script>
+</body>
+</html>
