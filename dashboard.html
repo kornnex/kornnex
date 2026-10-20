@@ -1,294 +1,187 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Kornnex | Mi Panel</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel de Comerciante - Kornnex</title>
+    <style>
+        :root {
+            --bg-color: #121212;
+            --card-bg: #1e1e1e;
+            --text-color: #e0e0e0;
+            --accent-color: #bb86fc;
+            --success-color: #03dac6;
+            --border-color: #333;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 20px auto;
+            background-color: var(--card-bg);
+            padding: 25px;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+        }
+
+        h2 {
+            color: var(--accent-color);
+            margin-top: 0;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-size: 14px;
+            color: #b0b0b0;
+        }
+
+        input[type="text"], textarea, select {
+            width: 100%;
+            padding: 10px;
+            border-radius: 6px;
+            border: 1px solid var(--border-color);
+            background-color: #2a2a2a;
+            color: white;
+            box-sizing: border-box;
+        }
+
+        input[type="file"] {
+            background-color: #2a2a2a;
+            padding: 10px;
+            border-radius: 6px;
+            width: 100%;
+            box-sizing: border-box;
+            color: white;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: var(--accent-color);
+            color: #121212;
+            border: none;
+            border-radius: 6px;
+            font-weight: bold;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .btn-home {
+            display: inline-block;
+            margin-bottom: 20px;
+            color: var(--accent-color);
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        #mensajeForm {
+            margin-top: 15px;
+            padding: 10px;
+            border-radius: 6px;
+            display: none;
+        }
+    </style>
 </head>
-<body class="bg-slate-900 text-white font-sans min-h-screen">
+<body>
 
-  <header class="border-b border-slate-800 bg-slate-900/80 backdrop-blur sticky top-0 z-50">
-    <div class="max-w-4xl mx-auto px-4 py-4 flex justify-between items-center">
-      <span class="text-xl font-black tracking-wider bg-gradient-to-r from-cyan-400 to-blue-600 bg-clip-text text-transparent">KORNNEX PANEL</span>
-      <button onclick="cerrarSesion()" class="text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 px-3 py-1.5 rounded-lg border border-slate-700">
-        Cerrar Sesión
-      </button>
-    </div>
-  </header>
+    <div class="container">
+        <a href="index.html" class="btn-home">← Volver al Inicio</a>
+        <h2>➕ Cargar Nuevo Comercio</h2>
 
-  <main class="max-w-4xl mx-auto px-4 py-8 space-y-8">
-    <!-- INFORMACIÓN PRINCIPAL DEL LOCAL -->
-    <div class="bg-slate-800 border border-slate-700 rounded-2xl p-6 shadow-2xl">
-      <div class="flex flex-wrap justify-between items-center gap-4 border-b border-slate-700 pb-4 mb-6">
-        <div>
-          <h1 id="dashNombre" class="text-2xl font-black text-white">Cargando...</h1>
-          <p id="dashIg" class="text-xs text-slate-400 font-mono"></p>
-        </div>
-        <div class="flex items-center gap-2">
-          <span id="badgePlan" class="text-xs font-bold px-3 py-1 rounded-full bg-slate-700 text-slate-300">Plan Gratis</span>
-        </div>
-      </div>
-
-      <div id="alertaPago" class="hidden bg-amber-500/10 border border-amber-500/40 p-4 rounded-xl mb-6">
-        <p class="text-xs text-amber-300 font-medium">
-          <i class="fas fa-lock text-amber-400 mr-1"></i> Ya utilizaste tu edición gratuita de perfil. Suscríbete para hacer más modificaciones.
-        </p>
-      </div>
-
-      <form id="formDash" onsubmit="guardarCambios(event)" class="space-y-4">
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <label class="block text-xs font-semibold text-slate-400 mb-1">Número de WhatsApp</label>
-            <input type="text" id="dashWhatsapp" placeholder="54911..." class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-cyan-500">
-          </div>
-          <div>
-            <label class="block text-xs font-semibold text-slate-400 mb-1">Foto de Portada (Galería)</label>
-            <input type="file" id="dashFileImagen" accept="image/*" class="w-full text-xs text-slate-400 file:mr-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-slate-700 file:text-cyan-400 hover:file:bg-slate-600 cursor-pointer">
-            <input type="hidden" id="dashImagen">
-          </div>
-        </div>
-
-        <div>
-          <label class="block text-xs font-semibold text-slate-400 mb-1">Descripción del Comercio</label>
-          <textarea id="dashDesc" rows="2" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-cyan-500"></textarea>
-        </div>
-
-        <button type="submit" id="btnGuardar" class="w-full bg-cyan-600 hover:bg-cyan-500 text-white font-bold py-3 rounded-xl transition shadow-lg">
-          Guardar Datos del Perfil
-        </button>
-      </form>
-    </div>
-
-    <!-- SECCIÓN GESTIÓN DE CATÁLOGO / PRODUCTOS -->
-    <div class="bg-slate-800 border border-slate-700 rounded-2xl p-6 shadow-2xl">
-      <h2 class="text-xl font-bold mb-4 text-white flex items-center gap-2">
-        <i class="fas fa-box-open text-cyan-400"></i> Mi Catálogo / Productos
-      </h2>
-
-      <!-- FORMULARIO AGREGAR PRODUCTO -->
-      <form id="formProd" onsubmit="agregarProducto(event)" class="bg-slate-900 p-4 rounded-xl border border-slate-700/60 mb-6 space-y-3">
-        <h3 class="text-xs font-bold text-slate-300 uppercase tracking-wider">Cargar Nuevo Producto</h3>
-        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-          <input type="text" id="prodNombre" placeholder="Nombre (ej: Pizza Muzzarella)" required class="bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white">
-          <input type="number" step="0.01" id="prodPrecio" placeholder="Precio ($)" required class="bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white">
-          <input type="file" id="prodFileImagen" accept="image/*" class="text-xs text-slate-400 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:bg-slate-700 file:text-cyan-400">
-        </div>
-        <input type="text" id="prodDesc" placeholder="Breve descripción o ingredientes" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white">
-        
-        <button type="submit" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-2 px-4 rounded-lg text-xs transition flex items-center gap-1">
-          <i class="fas fa-plus"></i> Agregar al Catálogo
-        </button>
-      </form>
-
-      <!-- LISTA DE PRODUCTOS -->
-      <div id="listaProductos" class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-        <!-- Tarjetas de productos -->
-      </div>
-    </div>
-
-    <!-- SECCIÓN DE MEJORAS / MONETIZACIÓN -->
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-      <div class="bg-slate-800/60 border border-slate-700 p-6 rounded-2xl">
-        <h3 class="text-lg font-bold text-white mb-2 flex items-center gap-2">
-          <i class="fas fa-star text-amber-400"></i> Aparecer Primero (Destacado)
-        </h3>
-        <p class="text-xs text-slate-400 mb-4">Ubicá tu comercio en la parte superior del directorio por $2.500/semana.</p>
-        <button onclick="pagarConMercadoPago('destacado')" class="w-full bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold py-2.5 rounded-xl text-xs transition flex items-center justify-center gap-2">
-          <i class="fas fa-bolt"></i> Pagar Anuncio Semanal
-        </button>
-      </div>
-
-      <div class="bg-slate-800/60 border border-slate-700 p-6 rounded-2xl">
-        <h3 class="text-lg font-bold text-white mb-2 flex items-center gap-2">
-          <i class="fas fa-crown text-cyan-400"></i> Plan Mensual Pro
-        </h3>
-        <p class="text-xs text-slate-400 mb-4">Permite ediciones ilimitadas y catálogo interactivo por $3.500/mes.</p>
-        <button onclick="pagarConMercadoPago('suscripcion')" class="w-full bg-cyan-600 hover:bg-cyan-500 text-white font-bold py-2.5 rounded-xl text-xs transition border border-cyan-500 flex items-center justify-center gap-2">
-          <i class="fas fa-credit-card"></i> Activar Plan Pro
-        </button>
-      </div>
-    </div>
-  </main>
-
-  <script>
-    const localId = localStorage.getItem('kornnex_local_id');
-
-    if (!localId) {
-      window.location.href = '/login.html';
-    }
-
-    async function subirImagenServidor(inputFileElement) {
-      if (!inputFileElement.files || inputFileElement.files.length === 0) {
-        return null;
-      }
-      const formData = new FormData();
-      formData.append('imagen', inputFileElement.files[0]);
-
-      const res = await fetch('/api/upload', {
-        method: 'POST',
-        body: formData
-      });
-      if (res.ok) {
-        const data = await res.json();
-        return data.url;
-      }
-      return null;
-    }
-
-    async function cargarDatos() {
-      try {
-        const res = await fetch(`/api/local/${localId}`);
-        const localData = await res.json();
-
-        document.getElementById("dashNombre").innerText = localData.nombre;
-        document.getElementById("dashIg").innerText = localData.instagram;
-        document.getElementById("dashWhatsapp").value = localData.whatsapp || "";
-        document.getElementById("dashImagen").value = localData.imagen || "";
-        document.getElementById("dashDesc").value = localData.descripcion || "";
-
-        if (localData.plan === 'gratis' && localData.ediciones_realizadas >= 1) {
-          document.getElementById("alertaPago").classList.remove("hidden");
-          document.getElementById("btnGuardar").disabled = true;
-          document.getElementById("btnGuardar").classList.add("opacity-50", "cursor-not-allowed");
-        }
-
-        cargarProductos();
-      } catch (err) {
-        console.error(err);
-      }
-    }
-
-    async function cargarProductos() {
-      try {
-        const res = await fetch(`/api/productos/${localId}`);
-        const productos = await res.json();
-        const contenedor = document.getElementById("listaProductos");
-        contenedor.innerHTML = "";
-
-        if (productos.length === 0) {
-          contenedor.innerHTML = `<p class="text-xs text-slate-500 col-span-2">No tienes productos cargados aún.</p>`;
-          return;
-        }
-
-        productos.forEach(p => {
-          contenedor.innerHTML += `
-            <div class="bg-slate-900 border border-slate-700/50 rounded-xl p-3 flex justify-between items-center gap-3">
-              <div class="flex items-center gap-3">
-                ${p.imagen ? `<img src="${p.imagen}" class="w-12 h-12 rounded-lg object-cover">` : ''}
-                <div>
-                  <h4 class="font-bold text-white text-xs">${p.nombre}</h4>
-                  <p class="text-cyan-400 font-bold text-xs">$${p.precio}</p>
-                </div>
-              </div>
-              <button onclick="eliminarProducto(${p.id})" class="text-rose-400 hover:text-rose-300 text-xs p-2">
-                <i class="fas fa-trash"></i>
-              </button>
+        <form id="formCargarLocal" enctype="multipart/form-data">
+            <div class="form-group">
+                <label for="nombre">Nombre del Comercio *</label>
+                <input type="text" id="nombre" name="nombre" required placeholder="Ej: Barbería Silva">
             </div>
-          `;
+
+            <div class="form-group">
+                <label for="categoria">Categoría</label>
+                <select id="categoria" name="categoria">
+                    <option value="Gastronomía">Gastronomía / Resto</option>
+                    <option value="Barbería / Peluquería">Barbería / Peluquería</option>
+                    <option value="Ropa / Moda">Ropa / Moda</option>
+                    <option value="Servicios">Servicios Técnicos</option>
+                    <option value="Comercio">Comercio General</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="descripcion">Descripción</label>
+                <textarea id="descripcion" name="descripcion" rows="3" placeholder="Breve detalle de lo que ofrecés..."></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="direccion">Dirección / Zona</label>
+                <input type="text" id="direccion" name="direccion" placeholder="Ej: Av. San Martín 123, Alejandro Korn">
+            </div>
+
+            <div class="form-group">
+                <label for="telefono">Teléfono / WhatsApp</label>
+                <input type="text" id="telefono" name="telefono" placeholder="Ej: 1122334455">
+            </div>
+
+            <div class="form-group">
+                <label for="imagenArchivo">Foto o Logo del Negocio (Subir archivo)</label>
+                <input type="file" id="imagenArchivo" name="imagenArchivo" accept="image/*">
+            </div>
+
+            <button type="submit" id="btnSubmit">Guardar y Publicar Comercio</button>
+        </form>
+
+        <div id="mensajeForm"></div>
+    </div>
+
+    <script>
+        document.getElementById('formCargarLocal').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const btn = document.getElementById('btnSubmit');
+            const mensaje = document.getElementById('mensajeForm');
+            btn.disabled = true;
+            btn.innerText = 'Cargando imagen y publicando...';
+
+            const formData = new FormData(e.target);
+
+            try {
+                const res = await fetch('/api/negocios', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const data = await res.json();
+
+                if (res.ok && data.success) {
+                    mensaje.style.display = 'block';
+                    mensaje.style.backgroundColor = '#03dac6';
+                    mensaje.style.color = '#000';
+                    mensaje.innerText = '¡Comercio publicado con éxito en Kornnex!';
+                    document.getElementById('formCargarLocal').reset();
+                } else {
+                    throw new Error(data.error || 'Error al guardar');
+                }
+            } catch (err) {
+                mensaje.style.display = 'block';
+                mensaje.style.backgroundColor = '#cf6679';
+                mensaje.style.color = '#fff';
+                mensaje.innerText = 'Hubo un error al guardar el comercio. Intentalo de nuevo.';
+            } finally {
+                btn.disabled = false;
+                btn.innerText = 'Guardar y Publicar Comercio';
+            }
         });
-      } catch (err) {
-        console.error(err);
-      }
-    }
-
-    async function agregarProducto(e) {
-      e.preventDefault();
-      
-      const fileInput = document.getElementById("prodFileImagen");
-      let urlImagenSubida = await subirImagenServidor(fileInput);
-
-      const payload = {
-        emprendimiento_id: localId,
-        nombre: document.getElementById("prodNombre").value,
-        precio: parseFloat(document.getElementById("prodPrecio").value),
-        imagen: urlImagenSubida || '',
-        descripcion: document.getElementById("prodDesc").value
-      };
-
-      try {
-        const res = await fetch('/api/productos', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload)
-        });
-        if (res.ok) {
-          document.getElementById("formProd").reset();
-          cargarProductos();
-        }
-      } catch (err) {
-        console.error(err);
-      }
-    }
-
-    async function eliminarProducto(id) {
-      if (confirm("¿Borrar este producto?")) {
-        await fetch(`/api/productos/${id}`, { method: 'DELETE' });
-        cargarProductos();
-      }
-    }
-
-    async function guardarCambios(e) {
-      e.preventDefault();
-
-      const fileInput = document.getElementById("dashFileImagen");
-      let urlImagenNueva = await subirImagenServidor(fileInput);
-      
-      // Si no eligió una foto nueva, conserva la que ya tenía guardada
-      if (!urlImagenNueva) {
-        urlImagenNueva = document.getElementById("dashImagen").value;
-      }
-
-      const payload = {
-        whatsapp: document.getElementById("dashWhatsapp").value,
-        imagen: urlImagenNueva,
-        descripcion: document.getElementById("dashDesc").value
-      };
-
-      try {
-        const res = await fetch(`/api/local/${localId}`, {
-          method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload)
-        });
-        if (res.ok) {
-          alert("¡Perfil actualizado con tu nueva foto!");
-          cargarDatos();
-        }
-      } catch (err) {
-        console.error(err);
-      }
-    }
-
-    async function pagarConMercadoPago(tipoPago) {
-      try {
-        const res = await fetch('/api/crear-preferencia-pago', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            emprendimiento_id: localId,
-            tipo_pago: tipoPago
-          })
-        });
-
-        const data = await res.json();
-        if (data.init_point) {
-          window.location.href = data.init_point;
-        } else {
-          alert("No se pudo iniciar el proceso de pago.");
-        }
-      } catch (err) {
-        console.error(err);
-      }
-    }
-
-    function cerrarSesion() {
-      localStorage.removeItem('kornnex_local_id');
-      window.location.href = '/login.html';
-    }
-
-    cargarDatos();
-  </script>
+    </script>
 </body>
 </html>
