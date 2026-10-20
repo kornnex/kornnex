@@ -1,0 +1,14 @@
+[33me134658[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m)[m Restauracion integra de Kornnex: catalogo, limite de edicion, Mercado Pago y admin completo
+[33m233448b[m Restauracion completa de flujo: Perfil detallado, Reclamos y Admin Full
+[33m90d03f5[m Restauradas todas las funciones: Mercado Pago, Modal de WhatsApp, Carga de imagenes y Buscador
+[33m8eca4f9[m Reparada estructura HTML de admin.html
+[33m0d80282[m Corregida carga de tabla y estado vacio en admin
+[33mfe6b3a0[m Redisenio total responsivo con paleta azul verdoso y dorado sobrio
+[33m75dce5a[m Conectado PostgreSQL para persistencia de datos definitiva
+[33m30b20ef[m Solucionada subida de imagenes locales y carga de comercios
+[33m1e84535[m Protegido panel admin con contrasena y agregado selector de estado adquirido
+[33m25fa353[m Actualizado index.html con boton de login y estilo destacado para anuncios
+[33m76e8076[m Actualizado server.js con seguridad admin y subida de fotos
+[33m1d47b41[m Fijando version de Node a 20 para Render
+[33m1f37a8f[m Removiendo node_modules de git para deploy en Linux
+[33mc73beb5[m Primer subida de Kornnex
