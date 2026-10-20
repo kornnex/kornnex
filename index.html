@@ -1,344 +1,237 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Kornnex | Emprendimientos Locales</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kornnex - Directorio Comercial de Alejandro Korn</title>
+    <style>
+        :root {
+            --bg-color: #121212;
+            --card-bg: #1e1e1e;
+            --text-color: #e0e0e0;
+            --accent-color: #bb86fc;
+            --gold-color: #ffd700;
+            --border-color: #333;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background-color: var(--card-bg);
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        header h1 {
+            margin: 0;
+            color: var(--accent-color);
+            font-size: 24px;
+        }
+
+        .auth-buttons a {
+            background-color: var(--accent-color);
+            color: #121212;
+            padding: 8px 16px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+
+        .auth-buttons a.admin-btn {
+            background-color: #03dac6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+
+        .search-bar {
+            width: 100%;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            background-color: var(--card-bg);
+            color: white;
+            font-size: 16px;
+            margin-bottom: 30px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .card {
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+            transition: transform 0.2s;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card:hover {
+            transform: translateY(-4px);
+        }
+
+        /* Tarjeta de Anuncio / Destacada */
+        .card.destacado {
+            border: 2px solid var(--gold-color);
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.2);
+            grid-column: span 1;
+        }
+
+        .badge-ads {
+            background-color: var(--gold-color);
+            color: #000;
+            font-weight: bold;
+            font-size: 11px;
+            padding: 4px 8px;
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            border-radius: 4px;
+            text-transform: uppercase;
+        }
+
+        .card-img-container {
+            position: relative;
+            width: 100%;
+            height: 180px;
+            background-color: #2a2a2a;
+        }
+
+        .card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .card-content {
+            padding: 15px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .card h3 {
+            margin: 0 0 8px 0;
+            font-size: 18px;
+        }
+
+        .card.destacado h3 {
+            color: var(--gold-color);
+        }
+
+        .category {
+            font-size: 12px;
+            color: var(--accent-color);
+            text-transform: uppercase;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+
+        .description {
+            font-size: 14px;
+            color: #b0b0b0;
+            margin-bottom: 12px;
+        }
+
+        .info-footer {
+            font-size: 13px;
+            color: #888;
+            border-top: 1px solid var(--border-color);
+            padding-top: 8px;
+            margin-top: auto;
+        }
+    </style>
 </head>
-<body class="bg-slate-900 text-white font-sans min-h-screen">
+<body>
 
-  <!-- ENCABEZADO / NAVBAR -->
-  <header class="border-b border-slate-800 bg-slate-900/80 backdrop-blur sticky top-0 z-50">
-    <div class="max-w-6xl mx-auto px-4 py-4 flex justify-between items-center">
-      <div class="flex items-center space-x-2">
-        <span class="text-2xl font-black tracking-wider bg-gradient-to-r from-cyan-400 to-blue-600 bg-clip-text text-transparent">KORNNEX</span>
-        <span class="text-xs bg-cyan-950 text-cyan-400 font-semibold px-2 py-0.5 rounded-full border border-cyan-800">ONLINE</span>
-      </div>
-      
-      <!-- CONTENEDOR CON BOTONES -->
-      <div class="flex items-center gap-2">
-        <button onclick="toggleModalCarga()" class="text-sm bg-cyan-600 hover:bg-cyan-500 text-white px-3 py-1.5 rounded-lg transition flex items-center gap-2 font-medium">
-          <i class="fas fa-plus"></i> Cargar Local
-        </button>
-
-        <a href="https://instagram.com/kornnex.online" target="_blank" class="text-sm bg-slate-800 hover:bg-slate-700 text-slate-200 px-3 py-1.5 rounded-lg border border-slate-700 transition hidden sm:flex items-center gap-2">
-          <i class="fab fa-instagram text-pink-500"></i> @kornnex.online
-        </a>
-      </div>
-    </div>
-  </header>
-
-  <!-- HERO / PRESENTACIÓN -->
-  <section class="max-w-4xl mx-auto px-4 py-12 text-center">
-    <h1 class="text-4xl md:text-5xl font-extrabold tracking-tight mb-4">
-      Descubrí los mejores <span class="bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">emprendimientos</span> cerca tuyo.
-    </h1>
-    <p class="text-slate-400 text-lg mb-8 max-w-2xl mx-auto">
-      La vitrina digital que conecta a los comercios de Alejandro Korn con sus vecinos.
-    </p>
-
-    <!-- BARRA DE BÚSQUEDA -->
-    <div class="relative max-w-xl mx-auto mb-10">
-      <input type="text" id="searchInput" placeholder="Buscar por nombre o rubro (ej. Indumentaria, Pizzería...)" 
-             class="w-full bg-slate-800/90 border border-slate-700 rounded-2xl px-5 py-4 pl-12 text-white placeholder-slate-500 focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition shadow-lg">
-      <i class="fas fa-search absolute left-4 top-5 text-slate-500"></i>
-    </div>
-  </section>
-
-  <!-- SECCIÓN DE TARJETAS -->
-  <main class="max-w-6xl mx-auto px-4 pb-20">
-    <h2 class="text-xl font-bold mb-6 text-slate-300 flex items-center gap-2">
-      <i class="fas fa-store text-cyan-400"></i> Locales Destacados
-    </h2>
-
-    <div id="gridEmprendimientos" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-      <!-- Se inyectan las tarjetas automáticamente -->
-    </div>
-  </main>
-
-  <!-- FOOTER -->
-  <footer class="border-t border-slate-800 py-8 text-center text-slate-500 text-sm">
-    <p>© 2026 Kornnex. Impulsando el crecimiento local.</p>
-  </footer>
-
-  <!-- MODAL PARA CARGAR NUEVO EMPRENDIMIENTO -->
-  <div id="modalCarga" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm hidden items-center justify-center z-50 p-4">
-    <div class="bg-slate-800 border border-slate-700 rounded-2xl max-w-lg w-full p-6 relative shadow-2xl">
-      <button onclick="toggleModalCarga()" class="absolute top-4 right-4 text-slate-400 hover:text-white text-lg">
-        <i class="fas fa-times"></i>
-      </button>
-      
-      <h3 class="text-xl font-bold mb-4 text-white flex items-center gap-2">
-        <i class="fas fa-store-alt text-cyan-400"></i> Agregar Nuevo Emprendimiento
-      </h3>
-
-      <form id="formLocal" onsubmit="guardarLocal(event)" class="space-y-4">
-        <div>
-          <label class="block text-xs font-semibold text-slate-400 mb-1">Nombre del Local</label>
-          <input type="text" id="nuevoNombre" required class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-cyan-500">
+    <header>
+        <h1>Kornnex 🏙️</h1>
+        <div class="auth-buttons">
+            <a href="login.html">Iniciar Sesión / Registro</a>
+            <a href="admin.html" class="admin-btn">Panel Admin</a>
         </div>
-        <div class="grid grid-cols-2 gap-4">
-          <div>
-            <label class="block text-xs font-semibold text-slate-400 mb-1">Rubro</label>
-            <input type="text" id="nuevoRubro" placeholder="Ej: Indumentaria" required class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-cyan-500">
-          </div>
-          <div>
-            <label class="block text-xs font-semibold text-slate-400 mb-1">Instagram</label>
-            <input type="text" id="nuevoIg" placeholder="@usuario" required class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-cyan-500">
-          </div>
-        </div>
-        <div>
-          <label class="block text-xs font-semibold text-slate-400 mb-1">Link de Imagen (URL)</label>
-          <input type="url" id="nuevaImagen" placeholder="https://..." required class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-cyan-500">
-        </div>
-        <div>
-          <label class="block text-xs font-semibold text-slate-400 mb-1">Breve Descripción</label>
-          <textarea id="nuevaDesc" rows="2" required class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-cyan-500"></textarea>
-        </div>
-        <button type="submit" class="w-full bg-cyan-600 hover:bg-cyan-500 text-white font-bold py-3 rounded-xl transition shadow-lg">
-          Guardar en Kornnex
-        </button>
-      </form>
-    </div>
-  </div>
+    </header>
 
-  <!-- MODAL DE RECLAMO DE PERFIL -->
-  <div id="modalReclamo" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm hidden items-center justify-center z-50 p-4">
-    <div class="bg-slate-800 border border-slate-700 rounded-2xl max-w-md w-full p-6 relative shadow-2xl">
-      <button onclick="toggleModalReclamo()" class="absolute top-4 right-4 text-slate-400 hover:text-white text-lg">
-        <i class="fas fa-times"></i>
-      </button>
-
-      <div class="text-center mb-6">
-        <span class="bg-cyan-950 text-cyan-400 text-xs font-bold px-3 py-1 rounded-full border border-cyan-800 inline-block mb-2">VERIFICACIÓN GRATUITA</span>
-        <h3 id="reclamoTituloLocal" class="text-2xl font-black text-white">Reclamar Perfil</h3>
-        <p id="reclamoIgLocal" class="text-slate-400 text-sm font-mono"></p>
-      </div>
-
-      <!-- PASO 1: Generar código -->
-      <div id="pasoGenerar" class="space-y-4">
-        <p class="text-xs text-slate-300 bg-slate-900/60 p-3 rounded-xl border border-slate-700">
-          Para certificar que sos el dueño real de esta cuenta, te generaremos un token único. Escribe una contraseña para acceder a tu panel en el futuro.
-        </p>
-
-        <div>
-          <label class="block text-xs font-semibold text-slate-400 mb-1">Crea tu contraseña de acceso</label>
-          <input type="password" id="reclamoPassword" placeholder="••••••••" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-cyan-500">
-        </div>
-
-        <button onclick="solicitarCodigo()" class="w-full bg-cyan-600 hover:bg-cyan-500 text-white font-bold py-3 rounded-xl transition shadow-lg">
-          Generar Código de Verificación
-        </button>
-      </div>
-
-      <!-- PASO 2: Mostrar código y confirmación -->
-      <div id="pasoConfirmar" class="space-y-4 hidden">
-        <div class="bg-slate-900 p-4 rounded-xl border border-cyan-800/60 text-center">
-          <span class="text-xs text-slate-400 block mb-1">Tu Código de Verificación:</span>
-          <span id="codigoGenerado" class="text-3xl font-black tracking-widest text-cyan-400 font-mono"></span>
-        </div>
-
-        <div class="text-xs text-slate-300 space-y-2 bg-slate-900/40 p-3 rounded-xl border border-slate-700/50">
-          <p class="font-bold text-white">Instrucciones:</p>
-          <p>1. Entra a tu cuenta de Instagram <span id="instruccionIg" class="font-bold text-cyan-400"></span>.</p>
-          <p>2. Envía un DM a <a href="https://instagram.com/kornnex.online" target="_blank" class="text-pink-400 underline">@kornnex.online</a> con el código generado.</p>
-          <p>3. Una vez enviado, pulsa el botón de abajo para verificar.</p>
-        </div>
-
-        <button onclick="confirmarVerificacion()" class="w-full bg-green-600 hover:bg-green-500 text-white font-bold py-3 rounded-xl transition shadow-lg flex items-center justify-center gap-2">
-          <i class="fas fa-check-circle"></i> Confirmar y Activar Perfil
-        </button>
-      </div>
-    </div>
-  </div>
-
-  <!-- JAVASCRIPT -->
-  <script>
-    const grid = document.getElementById("gridEmprendimientos");
-    let emprendimientos = [];
-    let localSeleccionado = null;
-    let codigoActual = "";
-
-    function toggleModalCarga() {
-      const modal = document.getElementById("modalCarga");
-      modal.classList.toggle("hidden");
-      modal.classList.toggle("flex");
-    }
-
-    function toggleModalReclamo() {
-      const modal = document.getElementById("modalReclamo");
-      modal.classList.toggle("hidden");
-      modal.classList.toggle("flex");
-    }
-
-    async function cargarEmprendimientos() {
-      try {
-        const respuesta = await fetch('/api/emprendimientos');
-        emprendimientos = await respuesta.json();
-        renderizarTarjetas(emprendimientos);
-      } catch (error) {
-        console.error("Error al cargar locales:", error);
-      }
-    }
-
-    function renderizarTarjetas(lista) {
-      grid.innerHTML = "";
-      lista.forEach(local => {
-        grid.innerHTML += `
-          <div class="bg-slate-800/50 border border-slate-700/60 rounded-2xl overflow-hidden hover:border-slate-500 transition duration-300 flex flex-col justify-between relative">
-            ${local.destacado ? `
-              <span class="absolute top-3 left-3 bg-gradient-to-r from-amber-500 to-yellow-400 text-slate-950 font-black text-[10px] px-2.5 py-0.5 rounded-full shadow-lg flex items-center gap-1 z-10">
-                <i class="fas fa-star"></i> DESTACADO
-              </span>
-            ` : ''}
-            <div>
-              <a href="/local.html?id=${local.id}" class="block relative h-48 overflow-hidden group">
-                <img src="${local.imagen}" alt="${local.nombre}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
-                <span class="absolute top-3 right-3 text-xs font-bold px-2.5 py-1 rounded-full bg-slate-900/80 backdrop-blur border border-slate-700 text-cyan-300">
-                  ${local.rubro}
-                </span>
-              </a>
-              <div class="p-5">
-                <div class="flex items-center gap-2 mb-2">
-                  <a href="/local.html?id=${local.id}" class="text-xl font-bold text-white hover:text-cyan-400 transition">${local.nombre}</a>
-                  ${local.verificado ? '<i class="fas fa-check-circle text-cyan-400" title="Verificado"></i>' : ''}
-                </div>
-                <p class="text-slate-400 text-sm mb-4">${local.descripcion}</p>
-                <div class="text-xs text-slate-500 font-mono mb-4 flex items-center gap-1">
-                  <i class="fab fa-instagram text-pink-500"></i> ${local.instagram}
-                </div>
-              </div>
-            </div>
-
-            <div class="p-5 pt-0">
-              <div class="grid grid-cols-2 gap-2 mb-2">
-                <a href="/local.html?id=${local.id}" class="w-full bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 text-center font-medium py-2 rounded-xl text-xs transition flex items-center justify-center gap-1">
-                  <i class="fas fa-eye text-cyan-400"></i> Ver Perfil
-                </a>
-                ${local.verificado ? `
-                  <a href="https://wa.me/${local.whatsapp}" target="_blank" class="w-full bg-emerald-600/90 hover:bg-emerald-500 text-white font-medium py-2 rounded-xl text-xs transition flex items-center justify-center gap-1">
-                    <i class="fab fa-whatsapp"></i> Chat
-                  </a>
-                ` : `
-                  <button onclick="abrirReclamo(${local.id}, '${local.nombre}', '${local.instagram}')" class="w-full bg-cyan-950/60 hover:bg-cyan-900 text-cyan-400 font-semibold py-2 rounded-xl text-xs border border-cyan-800/50 transition">
-                    Reclamar
-                  </button>
-                `}
-              </div>
-            </div>
-          </div>
-        `;
-      });
-    }
-
-
-    function abrirReclamo(id, nombre, ig) {
-      localSeleccionado = { id, nombre, ig };
-      document.getElementById("reclamoTituloLocal").innerText = nombre;
-      document.getElementById("reclamoIgLocal").innerText = ig;
-      document.getElementById("instruccionIg").innerText = ig;
-      document.getElementById("pasoGenerar").classList.remove("hidden");
-      document.getElementById("pasoConfirmar").classList.add("hidden");
-      document.getElementById("reclamoPassword").value = "";
-      toggleModalReclamo();
-    }
-
-    async function solicitarCodigo() {
-      const password = document.getElementById("reclamoPassword").value;
-      if (!password || password.length < 4) {
-        alert("Por favor ingresa una contraseña de al menos 4 caracteres.");
-        return;
-      }
-
-      try {
-        const res = await fetch('/api/reclamar-codigo', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ id: localSeleccionado.id })
-        });
-        const data = await res.json();
+    <div class="container">
+        <input type="text" id="searchInput" class="search-bar" placeholder="Buscar comercios, servicios o categorías en Alejandro Korn...">
         
-        if (data.exito) {
-          codigoActual = data.codigo;
-          document.getElementById("codigoGenerado").innerText = codigoActual;
-          document.getElementById("pasoGenerar").classList.add("hidden");
-          document.getElementById("pasoConfirmar").classList.remove("hidden");
-        }
-      } catch (err) {
-        console.error(err);
-      }
-    }
+        <div id="negociosGrid" class="grid">
+            <!-- Los negocios se cargan dinámicamente -->
+        </div>
+    </div>
 
-    async function confirmarVerificacion() {
-      const password = document.getElementById("reclamoPassword").value;
-      
-      try {
-        const res = await fetch('/api/verificar-manual', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            id: localSeleccionado.id,
-            codigo: codigoActual,
-            password: password
-          })
+    <script>
+        async function cargarNegocios() {
+            try {
+                const res = await fetch('/api/negocios');
+                const negocios = await res.json();
+                const grid = document.getElementById('negociosGrid');
+                grid.innerHTML = '';
+
+                if (negocios.length === 0) {
+                    grid.innerHTML = '<p style="color: #888;">No hay comercios cargados todavía.</p>';
+                    return;
+                }
+
+                negocios.forEach(n => {
+                    const esDestacado = n.destacado === 1 || n.adquirido === 1;
+                    const card = document.createElement('div');
+                    card.className = `card ${esDestacado ? 'destacado' : ''}`;
+
+                    card.innerHTML = `
+                        <div class="card-img-container">
+                            <img src="${n.imagen || '/uploads/default.jpg'}" alt="${n.nombre}" onerror="this.src='https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=500'">
+                            ${esDestacado ? '<span class="badge-ads">⭐ Anuncio</span>' : ''}
+                        </div>
+                        <div class="card-content">
+                            <div>
+                                <div class="category">${n.categoria || 'Comercio'}</div>
+                                <h3>${n.nombre}</h3>
+                                <div class="description">${n.descripcion || 'Sin descripción.'}</div>
+                            </div>
+                            <div class="info-footer">
+                                📍 ${n.direccion || 'Alejandro Korn'} <br>
+                                📞 ${n.telefono || 'Sin teléfono'}
+                            </div>
+                        </div>
+                    `;
+                    grid.appendChild(card);
+                });
+            } catch (err) {
+                console.error('Error al cargar negocios:', err);
+            }
+        }
+
+        // Buscador interactivo
+        document.getElementById('searchInput').addEventListener('input', (e) => {
+            const termino = e.target.value.toLowerCase();
+            const tarjetas = document.querySelectorAll('.card');
+            tarjetas.forEach(card => {
+                const texto = card.innerText.toLowerCase();
+                card.style.display = texto.includes(termino) ? 'flex' : 'none';
+            });
         });
 
-        const data = await res.json();
-        if (data.exito) {
-          alert("¡Felicitaciones! Tu perfil ha sido verificado correctamente.");
-          toggleModalReclamo();
-          cargarEmprendimientos();
-        } else {
-          alert(data.error || "No se pudo verificar.");
-        }
-      } catch (err) {
-        console.error(err);
-      }
-    }
-
-    async function guardarLocal(e) {
-      e.preventDefault();
-      const nuevoLocal = {
-        nombre: document.getElementById("nuevoNombre").value,
-        rubro: document.getElementById("nuevoRubro").value,
-        instagram: document.getElementById("nuevoIg").value,
-        imagen: document.getElementById("nuevaImagen").value,
-        descripcion: document.getElementById("nuevaDesc").value
-      };
-
-      try {
-        const res = await fetch('/api/emprendimientos', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(nuevoLocal)
-        });
-        
-        if(res.ok) {
-          alert("¡Local agregado con éxito a la base de datos!");
-          toggleModalCarga();
-          document.getElementById("formLocal").reset();
-          cargarEmprendimientos();
-        } else {
-          alert("Hubo un error al guardar.");
-        }
-      } catch (err) {
-        console.error(err);
-      }
-    }
-
-    // Inicializar
-    cargarEmprendimientos();
-
-    // Buscador
-    document.getElementById("searchInput").addEventListener("input", (e) => {
-      const texto = e.target.value.toLowerCase();
-      const filtrados = emprendimientos.filter(l => 
-        l.nombre.toLowerCase().includes(texto) || l.rubro.toLowerCase().includes(texto)
-      );
-      renderizarTarjetas(filtrados);
-    });
-  </script>
+        cargarNegocios();
+    </script>
 </body>
 </html>
